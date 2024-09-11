@@ -162,6 +162,169 @@
     
     
 
+    <p class="line-date">11 Sep 2024 </p>
+
+    <div>
+        <p class="line-title">
+            <a href="/posts/llm-in-excel/">
+                在 Excel 中接入大语言模型进行批量翻译
+            </a>
+        </p>
+
+        
+        <p class="line-summary"> <h2 id="一思路">一、思路</h2>
+<p>将大语言模型通过编写宏封装为函数，进而对 Excel 表格中的内容进行批量翻译。</p>
+<h2 id="二工具准备">二、工具准备</h2>
+<p>演示使用的软件是 Microsoft Office Home and Student 2019 中的 Excel，另外还需要一个可用的大语言模型的 API key，此处以智谱 AI 的 GLM-4 为例。关于 API key 的获取有很多参考教程这里不进行赘述。</p>
+<h2 id="三代码编写">三、代码编写</h2>
+<ol>
+<li>打开 Excel 中的 VBA 编辑器。</li>
+</ol>
+<blockquote>
+<ul>
+<li>我们可以通过以下方式找到 VBA 编辑器。
+<ul>
+<li>按下快捷键 Alt+F11 直接打开</li>
+<li>从菜单栏中的“开发工具”中选择 <code>Visual Basic</code>
+<ul>
+<li>如果你的菜单中没有“开发工具”选项，可以通过“文件”&gt;“选项”&gt;“自定义功能区”中勾选“开发工具”来添加它</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<ol start="2">
+<li>
+<p>插入新模块
+在编辑器菜单中选择 <code>插入</code> - <code>模块</code>，添加一个新的模块。</p>
+</li>
+<li>
+<p>编写 VBA 代码。
+以下代码是根据<a href="https://mp.weixin.qq.com/s/kilElUpJfFaS4Oi3qhkWcw">参考教程</a>中的代码以及智谱 AI 提供的<a href="https://open.bigmodel.cn/dev/api#glm-4">接口文档</a>进行改写得到。</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vb" data-lang="vb"><span style="display:flex;"><span><span style="color:#ca9ee6">Function</span> <span style="color:#8caaee">zhipu</span>(prompt <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">String</span>) <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">String</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 声明变量
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    <span style="color:#ca9ee6">Dim</span> url <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">String</span>, apiKey <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">String</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">Dim</span> response <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">Object</span>, json <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">String</span>, data <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">String</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">Dim</span> ws <span style="color:#99d1db;font-weight:bold">As</span> Worksheet
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 设置指向第一个工作表
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    <span style="color:#ca9ee6">Set</span> ws <span style="color:#99d1db;font-weight:bold">=</span> ThisWorkbook.Sheets(1)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 从工作表的B1单元格获取API密钥
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    apiKey <span style="color:#99d1db;font-weight:bold">=</span> ws.Range(<span style="color:#a6d189">&#34;B1&#34;</span>).Value
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 检查API密钥是否为空
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    <span style="color:#ca9ee6">If</span> apiKey <span style="color:#99d1db;font-weight:bold">=</span> <span style="color:#a6d189">&#34;&#34;</span> <span style="color:#ca9ee6">Then</span>
+</span></span><span style="display:flex;"><span>        MsgBox <span style="color:#a6d189">&#34;请在Sheet1的B1单元格中填写apiKey&#34;</span>, vbExclamation
+</span></span><span style="display:flex;"><span>        zhipu <span style="color:#99d1db;font-weight:bold">=</span> <span style="color:#a6d189">&#34;Error: API key is missing&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ca9ee6">Exit</span> <span style="color:#ca9ee6">Function</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8caaee">End</span> <span style="color:#ca9ee6">If</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 设置请求URL
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    url <span style="color:#99d1db;font-weight:bold">=</span> <span style="color:#a6d189">&#34;https://open.bigmodel.cn/api/paas/v4/chat/completions&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 替换特殊字符，并构建要发送的JSON数据
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    <span style="color:#ca9ee6">Dim</span> cleanPrompt <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">String</span>
+</span></span><span style="display:flex;"><span>    cleanPrompt <span style="color:#99d1db;font-weight:bold">=</span> Replace(prompt, <span style="color:#a6d189">&#34;&#34;&#34;&#34;</span>, <span style="color:#a6d189">&#34;\&#34;&#34;&#34;</span>)  <span style="color:#737994;font-style:italic">&#39; 转义双引号
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    cleanPrompt <span style="color:#99d1db;font-weight:bold">=</span> Replace(cleanPrompt, vbCrLf, <span style="color:#a6d189">&#34;\n&#34;</span>)  <span style="color:#737994;font-style:italic">&#39; 替换Excel中的换行符为JSON中的\n
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    cleanPrompt <span style="color:#99d1db;font-weight:bold">=</span> Replace(cleanPrompt, Chr(13), <span style="color:#a6d189">&#34;\n&#34;</span>)  <span style="color:#737994;font-style:italic">&#39; 替换回车符
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    cleanPrompt <span style="color:#99d1db;font-weight:bold">=</span> Replace(cleanPrompt, Chr(10), <span style="color:#a6d189">&#34;\n&#34;</span>)  <span style="color:#737994;font-style:italic">&#39; 替换换行符
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>
+</span></span><span style="display:flex;"><span>    data <span style="color:#99d1db;font-weight:bold">=</span> <span style="color:#a6d189">&#34;{&#34;&#34;model&#34;&#34;:&#34;&#34;glm-4&#34;&#34;,&#34;</span> <span style="color:#99d1db;font-weight:bold">&amp;</span> _
+</span></span><span style="display:flex;"><span>          <span style="color:#a6d189">&#34;&#34;&#34;messages&#34;&#34;:[{&#34;&#34;role&#34;&#34;:&#34;&#34;user&#34;&#34;,&#34;&#34;content&#34;&#34;:&#34;&#34;&#34;</span> <span style="color:#99d1db;font-weight:bold">&amp;</span> cleanPrompt <span style="color:#99d1db;font-weight:bold">&amp;</span> <span style="color:#a6d189">&#34;&#34;&#34;}],&#34;</span> <span style="color:#99d1db;font-weight:bold">&amp;</span> _
+</span></span><span style="display:flex;"><span>          <span style="color:#a6d189">&#34;&#34;&#34;temperature&#34;&#34;:0.5}&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 初始化HTTP请求对象，并设置请求方法、URL和同步标志
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    <span style="color:#ca9ee6">Set</span> response <span style="color:#99d1db;font-weight:bold">=</span> CreateObject(<span style="color:#a6d189">&#34;MSXML2.ServerXMLHTTP&#34;</span>)
+</span></span><span style="display:flex;"><span>    response.Open <span style="color:#a6d189">&#34;POST&#34;</span>, url, <span style="color:#ca9ee6">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 设置请求头
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    response.setRequestHeader <span style="color:#a6d189">&#34;Content-Type&#34;</span>, <span style="color:#a6d189">&#34;application/json&#34;</span>
+</span></span><span style="display:flex;"><span>    response.setRequestHeader <span style="color:#a6d189">&#34;Authorization&#34;</span>, <span style="color:#a6d189">&#34;Bearer &#34;</span> <span style="color:#99d1db;font-weight:bold">&amp;</span> apiKey
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 发送请求和数据
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    response.Send data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 获取响应文本
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    json <span style="color:#99d1db;font-weight:bold">=</span> response.responseText
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 解析JSON响应
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    <span style="color:#ca9ee6">Dim</span> jsonObject <span style="color:#99d1db;font-weight:bold">As</span> <span style="color:#e78284">Object</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">Set</span> jsonObject <span style="color:#99d1db;font-weight:bold">=</span> JsonConverter.ParseJson(json)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic">&#39; 从解析的JSON中提取所需内容并返回
+</span></span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"></span>    <span style="color:#ca9ee6">On</span> <span style="color:#ca9ee6">Error</span> <span style="color:#ca9ee6">Resume</span> <span style="color:#ca9ee6">Next</span>
+</span></span><span style="display:flex;"><span>    zhipu <span style="color:#99d1db;font-weight:bold">=</span> jsonObject(<span style="color:#a6d189">&#34;choices&#34;</span>)(1)(<span style="color:#a6d189">&#34;message&#34;</span>)(<span style="color:#a6d189">&#34;content&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">If</span> Err.Number <span style="color:#99d1db;font-weight:bold">&lt;&gt;</span> 0 <span style="color:#ca9ee6">Then</span>
+</span></span><span style="display:flex;"><span>        zhipu <span style="color:#99d1db;font-weight:bold">=</span> <span style="color:#a6d189">&#34;Error parsing response: &#34;</span> <span style="color:#99d1db;font-weight:bold">&amp;</span> json
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">End</span> <span style="color:#ca9ee6">If</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">On</span> <span style="color:#ca9ee6">Error</span> <span style="color:#ca9ee6">GoTo</span> 0
+</span></span><span style="display:flex;"><span><span style="color:#ca9ee6">End</span> <span style="color:#ca9ee6">Function</span>
+</span></span></code></pre></div><ol start="4">
+<li>
+<p>导入 Json 解析依赖
+下载用于 JSON 解析的依赖。<a href="https://github.com/VBA-tools/VBA-JSON/blob/master/JsonConverter.bas">下载地址</a>
+在编辑器菜单中选择 <code>文件</code> - <code>导入文件</code> 将下载得到的文件导入到项目中。</p> </p>
+        
+    </div>
+</div>
+    
+    <div class="post-line">
+
+    
+    
+    
+    
+
+    <p class="line-date">11 Sep 2024 </p>
+
+    <div>
+        <p class="line-title">
+            <a href="/posts/pdf-batch-extration/">
+                批量提取 PDF 文件中的指定信息并存储在 Excel 表格中
+            </a>
+        </p>
+
+        
+        <p class="line-summary"> <h2 id="一问题描述">一、问题描述</h2>
+<p>在一批药品说明书中提取指定信息。PDF 文件的命名格式为：药品名称[数字编码]，说明书的内容结构示例如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>【药品名称】
+</span></span><span style="display:flex;"><span>  xxxxxx
+</span></span><span style="display:flex;"><span>【适应症】
+</span></span><span style="display:flex;"><span>  xxxxxx
+</span></span><span style="display:flex;"><span>【用法用量】
+</span></span><span style="display:flex;"><span>  xxxxxx
+</span></span></code></pre></div><p>需要提取的信息为【药品名称】以及【适应症】的相关内容。</p>
+<h2 id="二遇到的障碍">二、遇到的障碍</h2>
+<p>首先决定使用 Python 编写程序。</p>
+<blockquote>
+<p>事实上正常的思路应该是使用有关 PDF 编辑的 Python 库，但是不知道出于什么原因，我无法正常读取目标 PDF 文件，花费了一段时间仍然解决不了，所以决定先将 PDF 文件转换为 Word 文件进行处理。<em><strong>文章末尾会附上 PDF 批量转换为 Word 或其它格式的方法。</strong></em></p>
+</blockquote>
+<p>最初的思路是：</p>
+<ul>
+<li>新建一个 Excel 表格，以 <code>【药品】</code>、<code>【编码】</code>、<code>【药品名称】</code>、<code>【适应症】</code> 为列标题。</li>
+<li><code>【药品】</code> 和 <code>【编码】</code> 利用 <code>[]</code> 作为读取断点然后分别写入即可。</li>
+<li>读取 Word 文件中的内容，当遇到 <code>【药物名称】</code> 时，将其之后的内容全部提取出来写入 Excel 表格中 <code>【药品名称】</code> 这一列中，直到遇到 <code>【适应症】</code> 为止。</li>
+<li>同理提取 <code>【适应症】</code> 的内容。</li>
+<li>遍历文件夹中所有 PDF 文件。</li>
+</ul>
+<p><strong>但是事情远没有这么简单。</strong></p>
+<p>转换得到的 Word 文件中，有一些本应作为标题的 <code>【药品名称】</code> 却位于页眉中，导致常规的读取代码无法读取到这部分内容，在尝试将页眉内容合并到正文中再进行处理但是无果的情况下，决定采取一种曲线救国的方法：</p>
+<p>利用下一板块的内容【适应症】来反向定位【药物名称】所在的位置，也就是将【适应症】之前的内容全部视为药物名称，然后为了防止把本就位于正文的【药物名称】这个标题也写入到单元格内，再手动在代码中把这个标题的内容删掉。</p>
+<h2 id="三代码编写">三、代码编写</h2>
+<p>综上，借助 ChatGPT 的帮助，得到了以下代码：</p> </p>
+        
+    </div>
+</div>
+    
+    <div class="post-line">
+
+    
+    
+    
+    
+
     <p class="line-date">9 Sep 2024 </p>
 
     <div>
