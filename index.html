@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en-us"
+<html lang="zh"
   dir="ltr">
 
   <head>
-	<meta name="generator" content="Hugo 0.134.1">
+	<meta name="generator" content="Hugo 0.134.2">
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 
@@ -38,8 +38,6 @@
 
 
 <link rel="stylesheet" href="/assets/combined.min.a6824bbee0d90d5af09fed9b70395ce7076b615e315037455d903314e96ef91b.css" media="all">
-
-
 
 
 
@@ -116,7 +114,7 @@
     
 
     
-    <p>self-instruction</p>
+    <p>Self-Intro</p>
     
 </div>
 
@@ -125,28 +123,7 @@
 
 
 <div class="social-icons">
-    <a href="https://www.linkedin.com/in/user/" target="_blank"
-        rel="noopener noreferrer me"
-        title="Linkedin">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-    stroke-linecap="round" stroke-linejoin="round">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-    <rect x="2" y="9" width="4" height="12"></rect>
-    <circle cx="4" cy="4" r="2"></circle>
-</svg>
-    </a>
-    <a href="https://medium.com/@user" target="_blank"
-        rel="noopener noreferrer me"
-        title="Medium">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76.000000 76.000000" fill="currentColor" stroke-width="2"
-    preserveAspectRatio="xMidYMid meet">
-    <g transform="translate(0.000000,76.000000) scale(0.100000,-0.100000)">
-        <path
-            d="M0 380 l0 -380 380 0 380 0 0 380 0 380 -380 0 -380 0 0 -380z m334 85 c30 -63 57 -115 59 -115 2 0 16 30 31 68 15 37 37 88 49 115 l20 47 76 0 76 -1 -27 -20 -28 -21 0 -151 c0 -150 0 -151 27 -179 l27 -28 -109 0 -109 0 27 28 c26 27 27 32 26 143 0 131 3 134 -71 -58 -24 -62 -48 -113 -53 -113 -6 0 -17 16 -24 35 -7 19 -36 83 -64 142 l-52 108 -3 -98 c-3 -97 -2 -99 28 -133 16 -19 30 -39 30 -44 0 -6 -31 -10 -70 -10 -45 0 -70 4 -70 11 0 6 14 27 30 46 30 33 30 35 30 151 0 116 0 118 -31 155 l-30 37 75 0 76 0 54 -115z" />
-    </g>
-</svg>
-    </a>
-    <a href="https://github.com/user" target="_blank"
+    <a href="https://github.com/kibrac" target="_blank"
         rel="noopener noreferrer me"
         title="Github">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -243,7 +220,21 @@
 <h2 id="12-神经网络基础">1.2 神经网络基础</h2>
 <h3 id="121-logistic-回归">1.2.1 Logistic 回归</h3>
 <h4 id="1211-logistic-回归">1.2.1.1 Logistic 回归</h4>
-<p>逻辑回归是一个主要用于二分分类的算法，那么逻辑回归是给定一个 $x$，输出一个该样本属于 $1$ 对应类别的预测概率 $\hat{y}=P(y=1|x)$。</p> </p>
+<p>逻辑回归是一个主要用于二分分类的算法，那么逻辑回归是给定一个 $x$，输出一个该样本属于 $1$ 对应类别的预测概率 $\hat{y}=P(y=1|x)$。</p>
+<p>Logistic 回归中使用的参数如下：</p>
+<ul>
+<li><strong>输入的特征向量</strong>： $x\in R^{n_{x}}$ , $x$ 是一个 $n_{x}$ 维的特征数量，用于训练的标签： $y\in0,1$</li>
+<li><strong>参数</strong>：权重： $w\in R^{n_{x}}$ ，偏置： $b\in R$</li>
+<li><strong>输出预测结果</strong>： $\hat{y}=\sigma(w^Tx+b)=\sigma(w_{1}x_{1}+w_{2}x_{2}+\cdots+b)=\sigma(\theta^Tx)$
+<ul>
+<li>Sigmoid 函数： $s=\sigma(w^Tx+b)=\sigma(z)=\frac{1}{1+e^{-z}}$</li>
+<li>如果 $z$ 的结果非常大，那么 $s$ 的结果接近于 $1$</li>
+<li>如果 $z$ 的结果非常小，那么 $s$ 的结果接近于 $0$</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>二分分类（Binary Classification）是一种常见的机器学习任务，主要用于将数据分为两个类别。在这种任务中，模型的目标是预测一个实例属于两个类别中的哪一个。</p> </p>
         
     </div>
 </div>

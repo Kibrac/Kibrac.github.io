@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us"
+<html lang="zh"
   dir="ltr">
 
   <head>
@@ -44,8 +44,6 @@
 
 
 
-
-
   </head>
 
   
@@ -61,39 +59,6 @@
         
 
 <div class="header">
-
-    
-
-    <h1 class="header-title">Kibrac</h1>
-
-    <div class="flex">
-        
-
-        
-        
-      
-        <p class="small ">
-            <a href="/" >
-                /home
-            </a>
-        </p>
-        
-      
-        <p class="small  bold ">
-            <a href="/posts" >
-                /posts
-            </a>
-        </p>
-        
-      
-        <p class="small ">
-            <a href="/about" >
-                /about
-            </a>
-        </p>
-        
-        
-    </div>
 
     
 
@@ -196,7 +161,21 @@
 <h2 id="12-神经网络基础">1.2 神经网络基础</h2>
 <h3 id="121-logistic-回归">1.2.1 Logistic 回归</h3>
 <h4 id="1211-logistic-回归">1.2.1.1 Logistic 回归</h4>
-<p>逻辑回归是一个主要用于二分分类的算法，那么逻辑回归是给定一个 $x$，输出一个该样本属于 $1$ 对应类别的预测概率 $\hat{y}=P(y=1|x)$。</p> </p>
+<p>逻辑回归是一个主要用于二分分类的算法，那么逻辑回归是给定一个 $x$，输出一个该样本属于 $1$ 对应类别的预测概率 $\hat{y}=P(y=1|x)$。</p>
+<p>Logistic 回归中使用的参数如下：</p>
+<ul>
+<li><strong>输入的特征向量</strong>： $x\in R^{n_{x}}$ , $x$ 是一个 $n_{x}$ 维的特征数量，用于训练的标签： $y\in0,1$</li>
+<li><strong>参数</strong>：权重： $w\in R^{n_{x}}$ ，偏置： $b\in R$</li>
+<li><strong>输出预测结果</strong>： $\hat{y}=\sigma(w^Tx+b)=\sigma(w_{1}x_{1}+w_{2}x_{2}+\cdots+b)=\sigma(\theta^Tx)$
+<ul>
+<li>Sigmoid 函数： $s=\sigma(w^Tx+b)=\sigma(z)=\frac{1}{1+e^{-z}}$</li>
+<li>如果 $z$ 的结果非常大，那么 $s$ 的结果接近于 $1$</li>
+<li>如果 $z$ 的结果非常小，那么 $s$ 的结果接近于 $0$</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>二分分类（Binary Classification）是一种常见的机器学习任务，主要用于将数据分为两个类别。在这种任务中，模型的目标是预测一个实例属于两个类别中的哪一个。</p> </p>
         
     </div>
 </div>

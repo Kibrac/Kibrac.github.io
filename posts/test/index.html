@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us"
+<html lang="zh"
   dir="ltr">
 
   <head>
@@ -43,8 +43,6 @@
 
 
 
-
-
   </head>
 
   
@@ -60,39 +58,6 @@
         
 
 <div class="header">
-
-    
-
-    <h1 class="header-title">Kibrac</h1>
-
-    <div class="flex">
-        
-
-        
-        
-      
-        <p class="small ">
-            <a href="/" >
-                /home
-            </a>
-        </p>
-        
-      
-        <p class="small ">
-            <a href="/posts" >
-                /posts
-            </a>
-        </p>
-        
-      
-        <p class="small ">
-            <a href="/about" >
-                /about
-            </a>
-        </p>
-        
-        
-    </div>
 
     
 
@@ -238,7 +203,6 @@ $$</p>
 <p>目的：使损失函数的值找到最小值</p>
 <p>方式：梯度下降</p>
 <p>函数的<strong>梯度（gradient）</strong> 指出了函数的最陡增长方向。<strong>按梯度的方向走，函数增长的就越快。那么按梯度的负方向走，函数值自然就降低得最快。</strong> 模型的训练目标即是寻找合适的 $w$ 和 $b$ 以最小化代价函数值。假设 $w$ 和 $b$ 都是一维实数，那么可以得到如下的 $J$ 关于 $w$ 和 $b$ 的图（根据损失函数得到）</p>
-<p>![[Pasted image 20240903224916.png]]</p>
 <p>可以看到，成本函数 $J$ 是一个凸函数，与非凸函数的区别在于其不含有多个局部最低。</p>
 <p>参数 $w$ 和 $b$ 的更新公式为：</p>
 <p>$w:=w-\alpha\frac{{dJ(w,b)}}{dw}$             $b:=b-\alpha\frac{{dJ(w,b)}}{db}$</p>
@@ -246,7 +210,8 @@ $$</p>
 <p>其中 $\alpha$ 表示学习速率，即每次更新的 $w$ 的步伐长度。当 $w$ 大于最优解 $w&rsquo;$ 时，导数大于 $0$ ，那么 $w$ 就会向更小的方向更新。反之就会向更大的方向更新。如此迭代直到收敛。</p>
 </blockquote>
 <p>通过平面理解梯度下降过程</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#99d1db">print</span>(<span style="color:#a6d189">&#39;hello&#39;</span>)
+</span></span></code></pre></div>
     
   </div>
 
@@ -280,6 +245,26 @@ $$</p>
     <a href="https://github.com/tomfran/typo">tomfran/typo</a>
 </p>
 
+
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+<script defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+
+<script defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body);"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false }
+      ]
+    });
+  });
+</script>
 
     </footer>
 
