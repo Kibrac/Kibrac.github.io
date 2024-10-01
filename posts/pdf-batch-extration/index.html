@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>批量提取 PDF 文件中的指定信息并存储在 Excel 表格中</title>
+    <meta name="description" content="一、问题描述 在一批药品说明书中提取指定信息。PDF 文件的命名格式为：药品名称[数字编码]，说明书的内容结构示例如下：
+【药品名称】 xxxxxx 【适应症】 xxxxxx 【用法用量】 xxxxxx 需要提取的信息为【药品名称】以及【适应症】的相关内容。
+二、遇到的障碍 首先决定使用 Python 编写程序。
+事实 …">
+    <meta name="keywords" content='blog, gokarna, hugo'>
+
+    <meta property="og:url" content="http://localhost:1313/posts/pdf-batch-extration/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="批量提取 PDF 文件中的指定信息并存储在 Excel 表格中">
+    <meta property="og:description" content="一、问题描述 在一批药品说明书中提取指定信息。PDF 文件的命名格式为：药品名称[数字编码]，说明书的内容结构示例如下：
+【药品名称】 xxxxxx 【适应症】 xxxxxx 【用法用量】 xxxxxx 需要提取的信息为【药品名称】以及【适应症】的相关内容。
+二、遇到的障碍 首先决定使用 Python 编写程序。
+事实 …">
+    <meta property="og:image" content="http://localhost:1313/img/avatar.jpg">
+    <meta property="og:image:secure_url" content="http://localhost:1313/img/avatar.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="批量提取 PDF 文件中的指定信息并存储在 Excel 表格中">
+    <meta name="twitter:description" content="一、问题描述 在一批药品说明书中提取指定信息。PDF 文件的命名格式为：药品名称[数字编码]，说明书的内容结构示例如下：
+【药品名称】 xxxxxx 【适应症】 xxxxxx 【用法用量】 xxxxxx 需要提取的信息为【药品名称】以及【适应症】的相关内容。
+二、遇到的障碍 首先决定使用 Python 编写程序。
+事实 …">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/pdf-batch-extration/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/pdf-batch-extration/">
+    <meta name="twitter:image" content="http://localhost:1313/img/avatar.jpg">
+
+    
+    <link rel="canonical" href="http://localhost:1313/posts/pdf-batch-extration/">
+
+    
+    <link rel="stylesheet" type="text/css" href="/css/normalize.min.css" media="print">
+
+    
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+
+    
+    <link id="dark-theme" rel="stylesheet" href="/css/dark.min.css">
+
+    
+    <script src="/js/bundle.min.893af8dd3b65bd0ffe90e7af33847bd6dc9180b8fa6d6659a212a6f4b62d3e01.js" integrity="sha256-iTr43TtlvQ/&#43;kOevM4R71tyRgLj6bWZZohKm9LYtPgE="></script>
+
+    
+    
+</head>
+<body>
+        <script>
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src='/img/avatar.jpg' alt="avatar">
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">Kibrac</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/" > Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/tags/" > Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/Kibrac" ><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span class="sr-only dark-theme-toggle-screen-reader-target"></span>
+                <a>
+                    <span class="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span class="sr-only hamburger-menu-toggle-screen-reader-target">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/" > Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/tags/" > Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/Kibrac" ><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span class="sr-only dark-theme-toggle-screen-reader-target">theme</span>
+                    <a>
+                        <span class="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>批量提取 PDF 文件中的指定信息并存储在 Excel 表格中</h1>
+
+        
+
+        
+	
+	
+	
+	
+        
+
+	
+
+	
+
+	
+          <small role="doc-subtitle"></small>
+	
+
+	
+          <p class="post-date">September 11, 2024
+           
+          </p>
+	
+
+        <ul class="post-tags">
+          
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <h2 id="一问题描述">一、问题描述</h2>
+<p>在一批药品说明书中提取指定信息。PDF 文件的命名格式为：药品名称[数字编码]，说明书的内容结构示例如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>【药品名称】
+</span></span><span style="display:flex;"><span>  xxxxxx
+</span></span><span style="display:flex;"><span>【适应症】
+</span></span><span style="display:flex;"><span>  xxxxxx
+</span></span><span style="display:flex;"><span>【用法用量】
+</span></span><span style="display:flex;"><span>  xxxxxx
+</span></span></code></pre></div><p>需要提取的信息为【药品名称】以及【适应症】的相关内容。</p>
+<h2 id="二遇到的障碍">二、遇到的障碍</h2>
+<p>首先决定使用 Python 编写程序。</p>
+<blockquote>
+<p>事实上正常的思路应该是使用有关 PDF 编辑的 Python 库，但是不知道出于什么原因，我无法正常读取目标 PDF 文件，花费了一段时间仍然解决不了，所以决定先将 PDF 文件转换为 Word 文件进行处理。<em><strong>文章末尾会附上 PDF 批量转换为 Word 或其它格式的方法。</strong></em></p>
+</blockquote>
+<p>最初的思路是：</p>
+<ul>
+<li>新建一个 Excel 表格，以 <code>【药品】</code>、<code>【编码】</code>、<code>【药品名称】</code>、<code>【适应症】</code> 为列标题。</li>
+<li><code>【药品】</code> 和 <code>【编码】</code> 利用 <code>[]</code> 作为读取断点然后分别写入即可。</li>
+<li>读取 Word 文件中的内容，当遇到 <code>【药物名称】</code> 时，将其之后的内容全部提取出来写入 Excel 表格中 <code>【药品名称】</code> 这一列中，直到遇到 <code>【适应症】</code> 为止。</li>
+<li>同理提取 <code>【适应症】</code> 的内容。</li>
+<li>遍历文件夹中所有 PDF 文件。</li>
+</ul>
+<p><strong>但是事情远没有这么简单。</strong></p>
+<p>转换得到的 Word 文件中，有一些本应作为标题的 <code>【药品名称】</code> 却位于页眉中，导致常规的读取代码无法读取到这部分内容，在尝试将页眉内容合并到正文中再进行处理但是无果的情况下，决定采取一种曲线救国的方法：</p>
+<p>利用下一板块的内容【适应症】来反向定位【药物名称】所在的位置，也就是将【适应症】之前的内容全部视为药物名称，然后为了防止把本就位于正文的【药物名称】这个标题也写入到单元格内，再手动在代码中把这个标题的内容删掉。</p>
+<h2 id="三代码编写">三、代码编写</h2>
+<p>综上，借助 ChatGPT 的帮助，得到了以下代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> docx <span style="color:#f92672">import</span> Document
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> openpyxl <span style="color:#f92672">import</span> Workbook
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">extract_content</span>(docx_path):
+</span></span><span style="display:flex;"><span>    doc <span style="color:#f92672">=</span> Document(docx_path)
+</span></span><span style="display:flex;"><span>    content <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;【药品名称】&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;【适应症】&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>}
+</span></span><span style="display:flex;"><span>    is_drug_name <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>  <span style="color:#75715e"># 用于标记是否正在处理药品名称</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> paragraph <span style="color:#f92672">in</span> doc<span style="color:#f92672">.</span>paragraphs:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> paragraph<span style="color:#f92672">.</span>text<span style="color:#f92672">.</span>startswith(<span style="color:#e6db74">&#34;【适应症】&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 切换到处理适应症的模式</span>
+</span></span><span style="display:flex;"><span>            is_drug_name <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> paragraph<span style="color:#f92672">.</span>text<span style="color:#f92672">.</span>startswith(<span style="color:#e6db74">&#34;【用法用量】&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 遇到用法用量结束处理</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> is_drug_name:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 如果在处理药品名称时，且当前段落不是标题，则将其内容视为药品名称，忽略标题本身</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> paragraph<span style="color:#f92672">.</span>text<span style="color:#f92672">.</span>startswith(<span style="color:#e6db74">&#34;【药品名称】&#34;</span>):
+</span></span><span style="display:flex;"><span>                content[<span style="color:#e6db74">&#34;【药品名称】&#34;</span>] <span style="color:#f92672">+=</span> paragraph<span style="color:#f92672">.</span>text <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 将适应症之后、用法用量之前的内容视为适应症</span>
+</span></span><span style="display:flex;"><span>            content[<span style="color:#e6db74">&#34;【适应症】&#34;</span>] <span style="color:#f92672">+=</span> paragraph<span style="color:#f92672">.</span>text <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> content
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">extract_file_info</span>(file_path):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 提取文件名中的药品和编码信息</span>
+</span></span><span style="display:flex;"><span>    file_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>basename(file_path)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">match</span> <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;(.+)\[([^\[\]]+)\].docx&#34;</span>, file_name)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">match</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#ae81ff">1</span>), <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">write_to_excel</span>(excel_path, folder_path):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 创建新的 Workbook</span>
+</span></span><span style="display:flex;"><span>    wb <span style="color:#f92672">=</span> Workbook()
+</span></span><span style="display:flex;"><span>    ws <span style="color:#f92672">=</span> wb<span style="color:#f92672">.</span>active
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 写入列标题</span>
+</span></span><span style="display:flex;"><span>    ws<span style="color:#f92672">.</span>append([<span style="color:#e6db74">&#34;【药品】&#34;</span>, <span style="color:#e6db74">&#34;【编码】&#34;</span>, <span style="color:#e6db74">&#34;【药品名称】&#34;</span>, <span style="color:#e6db74">&#34;【适应症】&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 遍历文件夹中的所有文件</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> filename <span style="color:#f92672">in</span> os<span style="color:#f92672">.</span>listdir(folder_path):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> filename<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#34;.docx&#34;</span>):
+</span></span><span style="display:flex;"><span>            docx_file <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(folder_path, filename)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 提取文件名中的药品和编码信息</span>
+</span></span><span style="display:flex;"><span>            drug_name, code <span style="color:#f92672">=</span> extract_file_info(docx_file)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 提取指定标签的内容</span>
+</span></span><span style="display:flex;"><span>            content <span style="color:#f92672">=</span> extract_content(docx_file)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 将每个文件的信息写入 Excel 表格的新行</span>
+</span></span><span style="display:flex;"><span>            ws<span style="color:#f92672">.</span>append([drug_name, code, content[<span style="color:#e6db74">&#34;【药品名称】&#34;</span>]<span style="color:#f92672">.</span>strip(), content[<span style="color:#e6db74">&#34;【适应症】&#34;</span>]<span style="color:#f92672">.</span>strip()])
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 保存 Excel 文件</span>
+</span></span><span style="display:flex;"><span>    wb<span style="color:#f92672">.</span>save(excel_path)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Success&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 指定包含 docx 文件的文件夹路径</span>
+</span></span><span style="display:flex;"><span>folder_path <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;folder_path&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 指定输出的 excel 文件路径</span>
+</span></span><span style="display:flex;"><span>excel_file <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;excel_file.xlsx&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将文件夹中所有文件的信息写入 Excel 表格</span>
+</span></span><span style="display:flex;"><span>write_to_excel(excel_file, folder_path)
+</span></span></code></pre></div><p>至此，批量提取 PDF 文件中的指定内容并写入到表格中的任务就算完成了，这里附上<strong>利用 Acrobat DC 批量转换 PDF 文件</strong>的方法——编写一个 vbs 脚本，原理相当于电脑自动使用鼠标进行一系列按钮的点击并循环。</p>
+<h2 id="附pdf-批量转换">附：PDF 批量转换</h2>
+<p>参考教程：<a href="https://zhuanlan.zhihu.com/p/611466687">PDF 批量转换为 WORD 或其它格式</a>。</p>
+<p>新建一个文本文件，然后写入以下代码，保存文件修改后缀为 <code>.vbs</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vb" data-lang="vb"><span style="display:flex;"><span><span style="color:#66d9ef">Function</span> <span style="color:#a6e22e">SaveAs</span>(OriginalFile,Extension) 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Dim</span> ExportFormat 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Dim</span> acroApp
+</span></span><span style="display:flex;"><span>    NewFileName <span style="color:#f92672">=</span> Replace(OriginalFile,<span style="color:#e6db74">&#34;.pdf&#34;</span>,<span style="color:#e6db74">&#34;.docx&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> acroApp <span style="color:#f92672">=</span> CreateObject(<span style="color:#e6db74">&#34;AcroExch.App&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Dim</span> acroAVDoc 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> acroAVDoc <span style="color:#f92672">=</span> CreateObject(<span style="color:#e6db74">&#34;AcroExch.AVDoc&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Call</span> acroAVDoc.Open(OriginalFile,<span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">If</span> acroAVDoc <span style="color:#f92672">Is</span> <span style="color:#66d9ef">Nothing</span> <span style="color:#66d9ef">Then</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Exit</span> <span style="color:#66d9ef">Function</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">End</span> <span style="color:#66d9ef">If</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Dim</span> acroPDDoc 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> acroPDDoc <span style="color:#f92672">=</span> acroAVDoc.GetPDDoc
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Dim</span> jso 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> jso <span style="color:#f92672">=</span> acroPDDoc.GetJSObject
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Select</span> <span style="color:#66d9ef">Case</span> LCase(extension)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;eps&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.eps&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;html&#34;</span>, <span style="color:#e6db74">&#34;htm&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.html&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;jpeg&#34;</span>, <span style="color:#e6db74">&#34;jpg&#34;</span>, <span style="color:#e6db74">&#34;jpe&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.jpeg&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;jpf&#34;</span>, <span style="color:#e6db74">&#34;jpx&#34;</span>, <span style="color:#e6db74">&#34;jp2&#34;</span>, <span style="color:#e6db74">&#34;j2k&#34;</span>, <span style="color:#e6db74">&#34;j2c&#34;</span>, <span style="color:#e6db74">&#34;jpc&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.jp2k&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;docx&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.docx&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;doc&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.doc&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;png&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.png&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;ps&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.ps&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;rft&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.rft&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;xlsx&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.xlsx&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;xls&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.spreadsheet&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;txt&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.accesstext&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;tiff&#34;</span>, <span style="color:#e6db74">&#34;tif&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.tiff&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#e6db74">&#34;xml&#34;</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;com.adobe.acrobat.xml-1-00&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">Case</span> <span style="color:#66d9ef">Else</span>: ExportFormat <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Wrong Input&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">End</span> <span style="color:#66d9ef">Select</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">If</span> ExportFormat <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#34;Wrong Input&#34;</span> <span style="color:#66d9ef">Then</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">Call</span> jso.SaveAs(NewFileName, ExportFormat)
+</span></span><span style="display:flex;"><span>            SaveAs <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Else</span>
+</span></span><span style="display:flex;"><span>        SaveAs <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">End</span> <span style="color:#66d9ef">If</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&#39;Release the objects.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    acroPDDoc.Close
+</span></span><span style="display:flex;"><span>    acroAVDoc.Close <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    acroApp.Exit
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> jso <span style="color:#f92672">=</span> <span style="color:#66d9ef">Nothing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> acroPDDoc <span style="color:#f92672">=</span> <span style="color:#66d9ef">Nothing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> acroAVDoc <span style="color:#f92672">=</span> <span style="color:#66d9ef">Nothing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> acroApp <span style="color:#f92672">=</span> <span style="color:#66d9ef">Nothing</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">End</span> <span style="color:#66d9ef">Function</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">Sub</span> <span style="color:#a6e22e">DoBatchConvert</span>(Dir,Extension)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">set</span> objFSO <span style="color:#f92672">=</span> CreateObject(<span style="color:#e6db74">&#34;Scripting.FileSystemObject&#34;</span>)
+</span></span><span style="display:flex;"><span>    objStartFolder <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;.&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> objFolder <span style="color:#f92672">=</span> objFSO.GetFolder(objStartFolder)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Set</span> colFiles <span style="color:#f92672">=</span> objFolder.Files
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">For</span> <span style="color:#66d9ef">Each</span> objFile <span style="color:#f92672">in</span> colFiles
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">If</span> objFSO.GetExtensionName(objFile.Name) <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;pdf&#34;</span> <span style="color:#66d9ef">Then</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">Call</span> SaveAs(objFile.Path,Extension)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">End</span> <span style="color:#66d9ef">If</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">Next</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">End</span> <span style="color:#66d9ef">Sub</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>DoBatchConvert <span style="color:#e6db74">&#34;.&#34;</span>,<span style="color:#e6db74">&#34;docx&#34;</span>
+</span></span></code></pre></div><p>将该文件放入包含你想要批量转换的 PDF 文件的文件夹中，双击该 vbs 文件即可开始转换。转换后的文件全部保存在该文件夹中，如果要导出为其它格式，则把该 vbs 文件最后一行的&quot;docx&quot;改为你想要的格式。</p>
+
+        
+    </div>
+
+    <div class="prev-next">
+        
+    </div>
+
+    
+    
+        <svg id="btt-button" class="arrow-logo" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512" onclick="scrollToTop()" title="Go to top">
+    
+    <path d="M177 159.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 255.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 329.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z"/>
+</svg>
+<script>
+    let backToTopButton = document.getElementById("btt-button");
+
+    window.onscroll = function() {
+        scrollFunction()
+    };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            backToTopButton.style.display = "block";
+        } else {
+            backToTopButton.style.display = "none";
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo(0, 0);
+    }
+</script>
+
+    
+    
+</div>
+
+
+
+    
+
+        </main><footer class="footer">
+    
+    
+
+    
+
+    
+
+        
+            
+        
+
+        
+
+        
+        
+
+        
+
+    
+
+    
+        <span>&copy; 2024 <a href="https://kibrac.github.io/">Kibrac</a></span>
+    
+
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>
